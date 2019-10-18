@@ -1,0 +1,107 @@
+---
+title: "Milestone 5"
+author: "Amanda Su"
+date: "10/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+library(tidyverse)
+library(readxl)
+```
+
+## About
+```{r}
+outbound <- read_xls("raw-data/outbound.xls", skip = 4) %>% 
+  
+  #select only the relevant columns (country and the years until 2019)
+  
+  select(Country, ...3, ...4, ...5, ...6, ...7, ...8, ...9) %>% 
+  
+  #rename the columns so that they aren't in the "...#" format
+  
+  set_names(c("country", "outbound_2013","outbound_2014","outbound_2015","outbound_2016","outbound_2017","outbound_2018", "outbound_2019")) 
+
+#read in outbound students dataset raw data and assign to inbound, skipping the first four lines since they include miscellaneous, unnecessary info
+
+inbound <- read_xls("raw-data/inbound.xls", skip = 4) %>%
+  
+  #select only the relevant columns (country and the years until 2019)
+
+  select(Country, ...3, ...4, ...5, ...6, ...7, ...8, ...9) %>% 
+  
+  #rename the columns so that they aren't in the "...#" format
+  
+  set_names(c("country", "inbound_2013","inbound_2014","inbound_2015","inbound_2016","inbound_2017","inbound_2018", "inbound_2019")) 
+
+#read in gdp dataset raw data and assign to outbound, skipping the first four lines since they include miscellaneous, unnecessary info
+
+gdp <- read_xls("raw-data/gdp.xls", skip = 4) %>%
+  
+  #select only the relevant columns (country and the years until 2019)
+  
+  select(Country, ...3, ...4, ...5, ...6, ...7, ...8, ...9) %>% 
+  
+  #rename the columns so that they aren't in the "...#" format
+  
+  set_names(c("country", "gdp_2013","gdp_2014","gdp_2015","gdp_2016","gdp_2017","gdp_2018", "gdp_2019"))
+
+#read in gov_education students dataset raw data and assign to outbound, skipping the first four lines since they include miscellaneous, unnecessary info
+
+gov_education <- read_xls("raw-data/gov-expend-education.xls", skip = 4) %>%
+  
+  #select only the relevant columns (country and the years until 2019)
+  
+  select(Country, ...3, ...4, ...5, ...6, ...7, ...8, ...9) %>% 
+  
+  #rename the columns so that they aren't in the "...#" format
+  
+  set_names(c("country", "govedu_2013","govedu_2014","govedu_2015","govedu_2016","govedu_2017","govedu_2018", "govedu_2019"))
+
+#read in population (age 15-24) dataset raw data and assign to outbound, skipping the first four lines since they include miscellaneous, unnecessary info
+
+population <- read_xls("raw-data/population.xls", skip = 4) %>%
+  
+  #select only the relevant columns (country and the years until 2019)
+  
+  select(Country, ...3, ...4, ...5, ...6, ...7, ...8, ...9) %>% 
+  
+  #rename the columns so that they aren't in the "...#" format
+  
+  set_names(c("country", "pop_2013","pop_2014","pop_2015","pop_2016","pop_2017","pop_2018", "pop_2019"))
+
+#create dataset named x by joining the inbound and gov_education datasets so that there are variables indicating the number of inbound international students in a country and the governmnent expenditure on education as percentage of a country's GDP for each year
+#joined by country variable since both original datasets had that variable in common
+
+x <- inner_join(inbound, gov_education, by = 'country') %>% 
+  
+  #join gdp to the dataset
+  
+  inner_join(gdp, by = 'country') %>% 
+  
+  #join outbound to the dataset as well 
+  
+  inner_join(outbound, by = 'country') %>%
+  
+  #join population (age 14-25) to the dataset as well 
+  
+  inner_join(population, by = 'country')
+  
+
+```
+
+## My Project
+I've always been really interested in the movements and patterns of international students around the world. I'm hoping to to ascertain any patterns between the wealth of a sending country (GDP) & its government expenditures on education and number of students from that country who choose to study abroad. I also want to see whether GDP and government expenditures on education of a host country could have any relationship with the number of international students who choose to study there. beyond these general trends, looking at U.S. in particular and seeing how political trends, movements, patterns affect number of inernational students EDIT
+
+## My Data
+I acquired each of my original datasets from UNESCO and joined them together into one dataset by country so that I could compare my variables of interest between countries. 
+
+**inbound:** number of inbound internationally mobile students by host region (country) from 2013 to 2019
+
+**gdp:** GDP (USD) by host region (country) from 2013 to 2019
+
+**gov_education:** government expenditure on education as a percentage of GDP by host region (country) from 2013 to 2019
+
+**outbound:** number of outbound internationally mobile students by host region (country) from 2013 to 2019
+population: population aged 15-24 years by host region (country) from 2013 to 2019
